@@ -150,7 +150,7 @@ def main() -> None:
 
                 for c2 in other_circles:
                     # Highlight circle when colllide
-                    if (id(c1) < id(c2)) and c1.collide_circle(c2):
+                    if (c1 is not c2) and c1.collide_circle(c2):
                         resolve_collision(c1, c2)
                         all_collided.add(c1)
                         all_collided.add(c2)
