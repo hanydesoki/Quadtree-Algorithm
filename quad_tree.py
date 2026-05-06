@@ -71,6 +71,7 @@ class QuadTree:
         for qt in self:
             for (e, ex, ey) in self._elements:
                 qt.insert(e, ex, ey)
+                
         self._elements.clear()
 
         self.divided = True
@@ -83,8 +84,7 @@ class QuadTree:
 
         if not self.divided and (len(self._elements) >= self.capacity):
             self.subdivide()
-
-        if self.divided:
+        elif self.divided:
             for qt in self:
                 qt.insert(element, x, y)
 
