@@ -70,9 +70,9 @@ def main() -> None:
     screen_width, screen_height = window.get_size()
 
     # Circle properties
-    number_circles = 300
-    radius_range = (4, 10)
-    speed_range = (0, 4)
+    number_circles = 400
+    radius_range = (5, 10)
+    speed_range = (1, 4)
 
     # Modes
     qt_approach: bool = True
@@ -149,15 +149,17 @@ def main() -> None:
                 )
 
                 for c2 in other_circles:
-                    # Highlight circle when colllide
-                    if (c1 is not c2) and c1.collide_circle(c2):
+                    # Handle collision between circles
+                    if (c1 is not c2) and ((c1 not in all_collided) and (c2 not in all_collided)) and c1.collide_circle(c2):
                         resolve_collision(c1, c2)
                         all_collided.add(c1)
                         all_collided.add(c2)
+
         else:
             # Naive approach
             for c1 in circles:
                 for c2 in circles:
+                    # Handle collision between circles
                     if (id(c1) < id(c2)) and c1.collide_circle(c2):
                         resolve_collision(c1, c2)
                         all_collided.add(c1)
@@ -183,7 +185,7 @@ def main() -> None:
         for circle in circles:
             pygame.draw.circle(
                 window,
-                color=(255, 255, 255) if circle in all_collided else (150, 150, 150),
+                color=(150, 200, 255) if circle in all_collided else (80, 120, 150),
                 center=circle.center,
                 radius=circle.radius
             )
