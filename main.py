@@ -70,7 +70,7 @@ def main() -> None:
     screen_width, screen_height = window.get_size()
 
     # Circle properties
-    number_circles = 400
+    number_circles = 300
     radius_range = (5, 10)
     speed_range = (1, 4)
 
@@ -78,12 +78,13 @@ def main() -> None:
     qt_approach: bool = True
     draw_qt: bool = False
     mouse_force_mode: bool = False
+    selected_circle: Circle | None = None
 
     # Circle initializations
     circles: list[Circle] = []
     for _ in range(number_circles):
         circle_radius = random.randint(*radius_range)
-        circle_angle = random.random() * math.pi
+        circle_angle = random.random() * 2 * math.pi
         circle_speed = random.randint(*speed_range)
         circle_mass = circle_radius
         new_circle = Circle(
@@ -104,6 +105,8 @@ def main() -> None:
         # Events / User inputs
         all_events = pygame.event.get()
 
+        left_click: bool = False
+
         for event in all_events:
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 run_loop = False
@@ -117,6 +120,10 @@ def main() -> None:
             # Apply force with mouse
             if event.type == pygame.KEYDOWN and event.key == pygame.K_f:
                 mouse_force_mode = not mouse_force_mode
+            # Left click
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                left_click = pygame.mouse.get_pressed()[0]
+            
 
         mouse_pos = pygame.mouse.get_pos()
 
@@ -133,9 +140,13 @@ def main() -> None:
             circle.update(0, 0, screen_width, screen_height)
             if qt_approach:
                 quad_tree.insert(circle, circle.x, circle.y)
+            
+            if left_click and circle.collide_point(mouse_pos):
+                selected_circle = circle
 
         all_collided: set[Circle] = set()
-
+        highlighted_neighbors: set[Circle] = set()
+        highlighted_quadtrees: set[QuadTree] = set()
         # Collision check
         if qt_approach:
             # Optimized approach
@@ -148,7 +159,19 @@ def main() -> None:
                     h=c1.radius * 2 + 20
                 )
 
+                if c1 is selected_circle:
+                    for qt in quad_tree.query_leafs(
+                        x=c1.x - c1.radius - 10,
+                        y=c1.y - c1.radius - 10,
+                        w=c1.radius * 2 + 20,
+                        h=c1.radius * 2 + 20
+                    ):
+                        highlighted_quadtrees.add(qt)
+
                 for c2 in other_circles:
+                    if c1 is selected_circle:
+                        highlighted_neighbors.add(c2)
+
                     # Handle collision between circles
                     if (c1 is not c2) and ((c1 not in all_collided) and (c2 not in all_collided)) and c1.collide_circle(c2):
                         resolve_collision(c1, c2)
@@ -174,7 +197,7 @@ def main() -> None:
             for leaf in quad_tree.all_leafs():
                 pygame.draw.rect(
                     window,
-                    color="white",
+                    color=(100, 255, 100) if leaf in highlighted_quadtrees else "white",
                     rect=leaf.rect,
                     width=1
                 )
@@ -188,6 +211,23 @@ def main() -> None:
                 color=(150, 200, 255) if circle in all_collided else (80, 120, 150),
                 center=circle.center,
                 radius=circle.radius
+            )
+
+            if circle is selected_circle:
+                pygame.draw.circle(
+                window,
+                color=(255, 100, 100),
+                center=circle.center,
+                radius=circle.radius,
+                width=1
+            )
+            elif circle in highlighted_neighbors:
+                pygame.draw.circle(
+                window,
+                color=(100, 200, 100),
+                center=circle.center,
+                radius=circle.radius,
+                width=1
             )
     
         # Debug display
@@ -204,7 +244,7 @@ def main() -> None:
         debug_surf = font.render(display_text, True, "white")
 
         window.blit(debug_surf, (10, 10))
-        pygame.display.update()
+        pygame.display.update() 
         
         
 

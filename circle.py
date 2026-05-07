@@ -23,6 +23,9 @@ class Circle:
     def squared_distance(self, point: tuple[float, float]) -> float:
         return pow(self.x - point[0], 2) + pow(self.y - point[1], 2)
     
+    def collide_point(self, point: tuple[float, float]) -> bool:
+        return self.squared_distance(point) < pow(self.radius, 2)
+    
     def collide_circle(self, other: "Circle") -> bool:
         return self.squared_distance(other.center) < pow(self.radius + other.radius, 2)
 

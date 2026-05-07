@@ -23,7 +23,7 @@ class QuadTree:
         self.se: "QuadTree" | None = None
         self.sw: "QuadTree" | None = None
 
-        self._elements: set[Any] = set()
+        self._elements: set[tuple[Any, float, float]] = set()
 
     def subdivide(self) -> None:
 
@@ -109,9 +109,6 @@ class QuadTree:
 
         while stack:
             qtree = stack.pop()
-
-            if not qtree.rect.colliderect(rect):
-                continue
             
             if qtree.divided:
                 stack.extend(qt for qt in qtree if qt.rect.colliderect(rect))
