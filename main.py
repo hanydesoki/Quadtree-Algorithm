@@ -197,9 +197,9 @@ def main() -> None:
             for leaf in quad_tree.all_leafs():
                 pygame.draw.rect(
                     window,
-                    color=(100, 255, 100) if leaf in highlighted_quadtrees else "white",
+                    color=(0, 200, 0) if leaf in highlighted_quadtrees else "white",
                     rect=leaf.rect,
-                    width=1
+                    width=3 if leaf in highlighted_quadtrees else 1
                 )
                 number_leaf += 1
 
