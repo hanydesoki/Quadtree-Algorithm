@@ -86,7 +86,7 @@ def main() -> None:
         circle_radius = random.randint(*radius_range)
         circle_angle = random.random() * 2 * math.pi
         circle_speed = random.randint(*speed_range)
-        circle_mass = circle_radius
+        circle_mass = 2 * circle_radius
         new_circle = Circle(
             x=random.randint(circle_radius, screen_width - circle_radius),
             y=random.randint(circle_radius, screen_height - circle_radius),
@@ -147,6 +147,7 @@ def main() -> None:
         all_collided: set[Circle] = set()
         highlighted_neighbors: set[Circle] = set()
         highlighted_quadtrees: set[QuadTree] = set()
+        
         # Collision check
         if qt_approach:
             # Optimized approach
