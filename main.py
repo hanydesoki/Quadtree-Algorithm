@@ -147,7 +147,7 @@ def main() -> None:
         all_collided: set[Circle] = set()
         highlighted_neighbors: set[Circle] = set()
         highlighted_quadtrees: set[QuadTree] = set()
-        
+
         # Collision check
         if qt_approach:
             # Optimized approach
@@ -157,7 +157,8 @@ def main() -> None:
                     x=c1.x - c1.radius - 10,
                     y=c1.y - c1.radius - 10,
                     w=c1.radius * 2 + 20,
-                    h=c1.radius * 2 + 20
+                    h=c1.radius * 2 + 20,
+                    check_boundary_collision=False
                 )
 
                 if c1 is selected_circle:

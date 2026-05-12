@@ -117,11 +117,11 @@ class QuadTree:
         
         return all_leafs
     
-    def query_elements(self, x: float, y: float, w: float, h: float) -> list[Any]:
+    def query_elements(self, x: float, y: float, w: float, h: float, check_boundary_collision: bool = True) -> list[Any]:
         all_elements: list[Any] = []
         rect = pygame.Rect(x, y, w, h)
         for (element, x_pos, y_pos) in set.union(*(qt._elements for qt in self.query_leafs(x, y, w, h))):
-            if rect.collidepoint((x_pos, y_pos)):
+            if (not check_boundary_collision) or rect.collidepoint((x_pos, y_pos)):
                 all_elements.append(element)
 
         return all_elements
